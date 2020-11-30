@@ -12,7 +12,7 @@ const dbConnection = process.env.DB_CONNECTION;
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-const port = 8080;
+const port = process.env.PORT;
 
 let db: Db;
 let flatCollection: Collection;
