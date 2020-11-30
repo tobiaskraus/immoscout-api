@@ -14,8 +14,8 @@ Run `npm start`
 
 Make a request with POSTMAN:
 
-- `GET localhost:8080/properties`
-- Authorization: Bearer Token (see in `auth.ts`)
+-   `GET localhost:8080/properties`
+-   Authorization: Bearer Token (see in `auth.ts`)
 
 ## Deploy
 
@@ -39,6 +39,6 @@ gcloud builds submit --tag gcr.io/tk-immoscout/immoscout-api
 gcloud run deploy --image gcr.io/tk-immoscout/immoscout-api --platform managed
 ```
 
-- or in GCP Console (Browser) under Cloud Run > {Project} > Edit & Deploy new revision
+-   or in GCP Console (Browser) under Cloud Run > {Project} > Edit & Deploy new revision
 
 more infos: https://cloud.google.com/run/docs/quickstarts/build-and-deploy
