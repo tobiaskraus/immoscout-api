@@ -39,6 +39,15 @@ gcloud builds submit --tag gcr.io/tk-immoscout/immoscout-api
 gcloud run deploy --image gcr.io/tk-immoscout/immoscout-api --platform managed
 ```
 
+**Deploy new revision of existing Service**
+
+gcloud run deploy SERVICE --image IMAGE_URL
+
+```sh
+# gcloud run deploy {SERVICE_NAME} --image {IMAGE_URL}
+gcloud run deploy immoscout-api --image gcr.io/tk-immoscout/immoscout-api
+```
+
 -   or in GCP Console (Browser) under Cloud Run > {Project} > Edit & Deploy new revision
 
 more infos: https://cloud.google.com/run/docs/quickstarts/build-and-deploy
