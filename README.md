@@ -19,11 +19,11 @@ Make a request with POSTMAN:
 
 ## Deploy
 
-### Deploy to DockerCloud
+### Continuous Deployment to Google Cloud Run
 
-...
+-   always on Branch `main`
 
-### Deploy to GCP
+### Deploy manual to Google Cloud Run
 
 **Build your container image using Cloud Build**
 
