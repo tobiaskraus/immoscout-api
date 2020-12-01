@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "clean": "rm -rf ./dist/* ",
-        "start": "ts-node-dev --respawn src/index.ts",
+        "start": "ts-node-dev --respawn -r dotenv/config src/index.ts",
         "build": "tsc"
     },
     "author": "",

@@ -9,8 +9,6 @@ import { Property } from "./models/property";
 import { isAuthorized } from "./utils/auth";
 import { downloadImage } from "./utils/download-image";
 
-dotenv.config();
-
 const dbConnection = process.env.DB_CONNECTION;
 
 const app = express();
