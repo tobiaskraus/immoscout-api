@@ -1,4 +1,4 @@
-# ImmosScout - API
+# ImmoScout - API
 
 API Service of ImmoScout project (see scraped results and organize them)
 
@@ -15,7 +15,7 @@ Run `npm start`
 Make a request with POSTMAN:
 
 -   `GET localhost:8080/properties`
--   Authorization: Bearer Token (see in `auth.ts`)
+-   Authorization: `"Bearer ${process.env.AUTH_TOKEN}"` (see in you environments)
 
 ## Deploy
 
