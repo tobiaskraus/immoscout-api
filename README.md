@@ -1,6 +1,6 @@
 # ImmoScout - API
 
-API Service of ImmoScout project (see scraped results and organize them)
+API Service of ImmoScout project (scrape, see results and organize them)
 
 ## Getting started
 

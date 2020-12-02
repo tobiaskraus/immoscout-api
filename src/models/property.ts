@@ -18,14 +18,14 @@ export interface Property {
     object_condition: string;
     heating_type: string;
     energy_consumption_value: string;
-    has_balcony_terrace: string;
+    has_balcony_terrace: boolean;
     description_object: string;
     description_furnishing: string;
     description_location: string;
     description_other: string;
 
     // Premium Info
-    premium_info: string;
+    premium_info: string[];
     quickcheck_intro: string;
     quickcheck_this_object: string;
     quickcheck_min: string;
