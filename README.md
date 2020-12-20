@@ -58,5 +58,6 @@ more infos: https://cloud.google.com/run/docs/quickstarts/build-and-deploy
 
 ## More information
 
+-   Documentation: [Google Cloud Storage: Node.js Client](https://googleapis.dev/nodejs/storage/latest/)
 -   Related topic: [medium.com: Image Upload With Google Cloud Storage and Node.js](https://medium.com/@olamilekan001/image-upload-with-google-cloud-storage-and-node-js-a1cf9baa1876)
     -   I didn't read the whole thing, but found it later on - and it seems to explain a lot which I went through

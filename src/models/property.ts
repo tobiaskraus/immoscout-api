@@ -1,3 +1,5 @@
+import { Upload } from "./upload";
+
 export interface Property {
     title: string;
     scout_id: string;
@@ -32,4 +34,7 @@ export interface Property {
     quickcheck_average_min: string;
     quickcheck_average_max: string;
     quickcheck_max: string;
+
+    // Extra (not from scraping)
+    uploads: Upload[];
 }
