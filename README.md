@@ -55,3 +55,8 @@ gcloud run deploy immoscout-api --image gcr.io/tk-immoscout/immoscout-api
 -   or in GCP Console (Browser) under Cloud Run > {Project} > Edit & Deploy new revision
 
 more infos: https://cloud.google.com/run/docs/quickstarts/build-and-deploy
+
+## More information
+
+-   Related topic: [medium.com: Image Upload With Google Cloud Storage and Node.js](https://medium.com/@olamilekan001/image-upload-with-google-cloud-storage-and-node-js-a1cf9baa1876)
+    -   I didn't read the whole thing, but found it later on - and it seems to explain a lot which I went through
