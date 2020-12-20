@@ -10,6 +10,10 @@ npm i
 
 Copy `.env-example` file to `.env` and update values
 
+Download or Copy and Paste the **Service Account Key** file from [Google Cloud / Service Account](https://console.cloud.google.com/iam-admin/serviceaccounts) or from another device where the project is already set up and paste it in the root as `/google-cloud-service-account-key.json`.
+
+-   this authenticates this API to upload files to the Storage from your localhost.
+
 Run `npm start`
 
 Make a request with POSTMAN:

@@ -1,14 +1,19 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { MongoClient, Db, Collection } from "mongodb";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import fs from "fs";
 import cors from "cors";
+import { Storage } from "@google-cloud/storage";
 
 import { Property } from "./models/property";
 import { isAuthorized } from "./utils/auth";
 import { downloadImage } from "./utils/download-image";
 
+const fileName = "./downloads/124833195/0.webp";
+const bucketName = "tk-immoscout-bucket";
+
+const storage = new Storage();
 const dbConnection = process.env.DB_CONNECTION;
 
 const app = express();
@@ -53,6 +58,33 @@ app.get("/properties", isAuthorized, (req, res) => {
             res.status(500).send({
                 message: "Unhandled error",
                 error: err,
+            });
+        });
+});
+
+/** only a test, how to upload a file to Google Cloud Storage Bucket */
+app.post("/upload", isAuthorized, (req, res) => {
+    const d = new Date();
+    storage
+        .bucket(bucketName)
+        .upload(fileName, {
+            gzip: true,
+            destination: `test/${d.getTime()}.webp`,
+            metadata: {
+                cacheControl: "public, max-age=31536000",
+            },
+        })
+        .then(([file, metadata]) => {
+            res.status(201).send({
+                message: `${fileName} uploaded to bucket: ${bucketName}`,
+                file,
+                metadata,
+            });
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: `${fileName} didn't upload to bucket: ${bucketName}`,
+                err,
             });
         });
 });
