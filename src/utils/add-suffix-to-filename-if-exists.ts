@@ -1,3 +1,6 @@
+import path = require("path");
+import { splitFilenameIntoFileAndExt } from "./split-filename-into-file-and-ext";
+
 /**
  * @param filename name of file (with file extension)
  * @param existingFilenames (with file extensions)
@@ -15,9 +18,11 @@ export function addSuffixToFileNameIfExists(
         return filename;
     }
     // filename exists -> try multiple suffixes until available found
+    const [name, extension] = splitFilenameIntoFileAndExt(filename);
+
     let foundAvailableFilename = false;
     for (let suffix = 1; !foundAvailableFilename && suffix < maxSuffix; suffix++) {
-        let tempFilename = `${filename}_${suffix}`;
+        let tempFilename = `${name}_${suffix}${extension ? "." + extension : ""}`;
         if (!existingFilenames.find((name) => name === tempFilename)) {
             // filename with this suffix does not exist ...
             filename = tempFilename;

@@ -1,6 +1,6 @@
 import { splitFilenameIntoFileAndExt } from "./split-filename-into-file-and-ext";
 
-fdescribe("splitFilenameIntoFileAndExt", () => {
+describe("splitFilenameIntoFileAndExt", () => {
     it("shoud split a.txt into ['a', 'txt'] ", () => {
         expect(splitFilenameIntoFileAndExt("a.txt")).toEqual(["a", "txt"]);
     });
