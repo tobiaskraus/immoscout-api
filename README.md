@@ -31,6 +31,15 @@ Make a request with POSTMAN:
 
 ### POST /properties
 
+creates property and uploads all `body.images` (array of urls as strings / optional) as webp files into bucket.
+The filenames of the uploads are replaced by incremental indices: `0.webp`, `1.webp` etc.
+
+-   Content-Type: application/json
+-   body: `{ scout_id: "...", images: ["...", ], ... }`
+-   response:
+    -   201
+    -   `{ "message": "Property created" }`
+
 ### POST /upload
 
 upload a file into property (file into bucket / filename into DB: `properties[i].uploads[j]`).
@@ -42,7 +51,7 @@ Gives filename a suffix if filename already exists.
     -   propertyId: number
 -   response:
     -   201
-    -   `{ "message": "uploaded to bucket..."}`
+    -   `{ "message": "uploaded to bucket..." }`
 
 ## Deploy
 
