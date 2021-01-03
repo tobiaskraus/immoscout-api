@@ -10,6 +10,6 @@ initDatabase();
 // API Routes
 import "./api/get-root";
 import "./api/get-properties";
-import "./api/get-properties-Id";
+import "./api/get-properties-ID";
 import "./api/post-upload";
 import "./api/post-properties";

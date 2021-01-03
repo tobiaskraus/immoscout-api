@@ -1,10 +1,8 @@
-import fs from "fs";
-
 import { app } from "../app";
 import { isAuthorized } from "../utils/auth";
 import { Property } from "../models/property";
 import { propertiesCollection } from "../database";
-import { downloadImage } from "../utils/download-image";
+import { downloadFileAndUpload } from "../utils/download-file-and-upload";
 
 app.post("/properties", isAuthorized, (req, res) => {
     const body: Property = req.body;
@@ -22,24 +20,23 @@ app.post("/properties", isAuthorized, (req, res) => {
     }
 
     propertiesCollection
+        // create Property in DB
         .insertOne(body)
-        .then((result) => {
+        .then(() => {
+            // if it has images: upload them into bucket
             if (body.images && body.images.length) {
-                // create folder and download files
-                const dir = `./downloads/${body.scout_id}`;
-                // mkdir with `recursive` needs Node > 10.12.0
-                fs.promises.mkdir(dir, { recursive: true }).then(() => {
-                    body.images.forEach((imgUrl, i) => {
-                        downloadImage(imgUrl, `${dir}/${i}.webp`);
-                    });
+                const promises: Promise<void>[] = [];
+                body.images.forEach((imgUrl, i) => {
+                    const pathInBucket = `properties/${body.scout_id}/${i}.webp`;
+                    promises.push(downloadFileAndUpload(imgUrl, pathInBucket));
                 });
+                return Promise.all<void>(promises);
             }
-            return result;
+            return Promise.resolve([]);
         })
-        .then((result) => {
+        .then(() => {
             res.status(201).send({
                 message: "Property created",
-                result,
             });
         })
         .catch((err) => {
