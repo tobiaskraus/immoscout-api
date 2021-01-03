@@ -21,6 +21,29 @@ Make a request with POSTMAN:
 -   `GET localhost:8080/properties`
 -   Authorization: `"Bearer ${process.env.AUTH_TOKEN}"` (see in you environments)
 
+## API Routes
+
+### GET /properties/:id
+
+### GET /properties
+
+### GET /
+
+### POST /properties
+
+### POST /upload
+
+upload a file into property (file into bucket / filename into DB: `properties[i].uploads[j]`).
+Gives filename a suffix if filename already exists.
+
+-   Content-Type: multipart/form-data
+-   body:
+    -   :someFileName: File
+    -   propertyId: number
+-   response:
+    -   201
+    -   `{ "message": "uploaded to bucket..."}`
+
 ## Deploy
 
 ### Continuous Deployment to Google Cloud Run
