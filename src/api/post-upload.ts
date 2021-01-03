@@ -48,10 +48,10 @@ app.post("/upload", formidable(), isAuthorized, async (req, res) => {
         })
         .then((_filename) => {
             filename = _filename;
-            uploadFile(filename, propertyId, filesArray[0]);
+            return uploadFile(filename, propertyId, filesArray[0]);
         })
-        .then(() => {
-            return updatePropertyInDb(filename, propertyId);
+        .then((pathInBucket) => {
+            return updatePropertyInDb(filename, propertyId, pathInBucket);
         })
         .then((response) => {
             res.status(200).send(response);
@@ -110,8 +110,11 @@ function changeFilenameIfExists(filename: string, existingFilenames: string[]) {
     return uniqueFilename;
 }
 
+/**
+ * @return Promise: pathInBucket (string)
+ */
 function uploadFile(filename: string, propertyId: string, file: File) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
         const pathInBucket = `properties/${propertyId}/uploads/${filename}`;
 
         const [err, uploadResponse] = await to(
@@ -134,15 +137,15 @@ function uploadFile(filename: string, propertyId: string, file: File) {
             reject(rejectData);
             return;
         }
-        resolve(uploadResponse);
+        resolve(pathInBucket);
     });
 }
 
-function updatePropertyInDb(filename: string, propertyId: string) {
+function updatePropertyInDb(filename: string, propertyId: string, pathInBucket: string) {
     return new Promise(async (resolve, reject) => {
         const upload: Upload = {
             name: filename,
-            url: `https://storage.googleapis.com/${bucket.name}/${filename}`,
+            url: `https://storage.googleapis.com/${bucket.name}/${pathInBucket}`,
         };
 
         const [errUpdateDb, updateDbResponse] = await to(
