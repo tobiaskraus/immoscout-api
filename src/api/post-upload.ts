@@ -1,22 +1,15 @@
 import formidable from "express-formidable";
-import { File } from "formidable";
 import { to } from "await-to-js";
 
 import { app } from "../app";
 import { isAuthorized } from "../utils/auth";
+import { RejectData } from "../models/reject-data";
 import { bucket } from "../storage";
 import { propertiesCollection } from "../database";
 import { Upload } from "../models/upload";
 import { Property } from "../models/property";
 import { addSuffixToFileNameIfExists } from "../utils/add-suffix-to-filename-if-exists";
-
-interface RejectData {
-    status: number;
-    send: {
-        message: string;
-        err?: any;
-    };
-}
+import { uploadFile } from "../utils/upload-file";
 
 app.post("/upload", formidable(), isAuthorized, async (req, res) => {
     const files = req.files;
@@ -38,6 +31,7 @@ app.post("/upload", formidable(), isAuthorized, async (req, res) => {
     }
 
     let filename: string;
+    let pathInBucket: string;
 
     checkIfPropertyExists(propertyId)
         .then((propertyUploadsPartial) => {
@@ -48,9 +42,15 @@ app.post("/upload", formidable(), isAuthorized, async (req, res) => {
         })
         .then((_filename) => {
             filename = _filename;
-            return uploadFile(filename, propertyId, filesArray[0]);
+            pathInBucket = `properties/${propertyId}/uploads/${filename}`;
+
+            return uploadFile({
+                propertyId,
+                file: filesArray[0],
+                pathInBucket,
+            });
         })
-        .then((pathInBucket) => {
+        .then(() => {
             return updatePropertyInDb(filename, propertyId, pathInBucket);
         })
         .then((response) => {
@@ -108,37 +108,6 @@ function changeFilenameIfExists(filename: string, existingFilenames: string[]) {
         throw rejectData;
     }
     return uniqueFilename;
-}
-
-/**
- * @return Promise: pathInBucket (string)
- */
-function uploadFile(filename: string, propertyId: string, file: File) {
-    return new Promise<string>(async (resolve, reject) => {
-        const pathInBucket = `properties/${propertyId}/uploads/${filename}`;
-
-        const [err, uploadResponse] = await to(
-            bucket.upload(file.path, {
-                gzip: true,
-                destination: pathInBucket,
-                metadata: {
-                    cacheControl: "public, max-age=31536000",
-                },
-            })
-        );
-        if (err || !uploadResponse) {
-            const rejectData: RejectData = {
-                status: 500,
-                send: {
-                    message: `couldn't upload to bucket "${bucket.name}": ${pathInBucket}`,
-                    err,
-                },
-            };
-            reject(rejectData);
-            return;
-        }
-        resolve(pathInBucket);
-    });
 }
 
 function updatePropertyInDb(filename: string, propertyId: string, pathInBucket: string) {
