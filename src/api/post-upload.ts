@@ -7,6 +7,8 @@ import { isAuthorized } from "../utils/auth";
 import { bucket } from "../storage";
 import { propertiesCollection } from "../database";
 import { Upload } from "../models/upload";
+import { Property } from "../models/property";
+import { addSuffixToFileNameIfExists } from "../utils/add-suffix-to-filename-if-exists";
 
 app.post("/upload", formidable(), isAuthorized, async (req, res) => {
     const files = req.files;
@@ -33,10 +35,44 @@ app.post("/upload", formidable(), isAuthorized, async (req, res) => {
 
 async function uploadFileAndUpdateDb(propertyId: string, file: File) {
     return new Promise(async (resolve, reject) => {
-        const pathInBucket = `properties/${propertyId}/uploads/${file.name}`;
+        // Step 1: make sure property exists and avoid overriding file (if same filename)
+        const [errProperty, resProperty] = await to<Pick<Property, "scout_id" | "uploads">[]>(
+            propertiesCollection
+                .find(
+                    { scout_id: propertyId },
+                    {
+                        projection: { scout_id: true, uploads: true },
+                    }
+                )
+                .toArray()
+        );
+        if (errProperty || !resProperty || !resProperty[0]) {
+            reject({
+                message: `couldn't find the property in DB`,
+                errProperty,
+            });
+            return;
+        }
+        const maxSuffix = 1000;
+        const filename = resProperty[0].uploads
+            ? addSuffixToFileNameIfExists(
+                  file.name,
+                  resProperty[0].uploads.map((upload) => upload.name),
+                  maxSuffix
+              )
+            : file.name;
 
-        // Step 1: Upload to Bucket
-        const [errUpload, uploadResponse] = await to(
+        if (!filename) {
+            reject({
+                message: `couldn't save the file, because this filename already exists in property more than ${maxSuffix} times`,
+                errProperty,
+            });
+            return;
+        }
+
+        // Step 2: Upload to Bucket
+        const pathInBucket = `properties/${propertyId}/uploads/${filename}`;
+        const [errUpload, resUpload] = await to(
             bucket.upload(file.path, {
                 gzip: true,
                 destination: pathInBucket,
@@ -45,7 +81,7 @@ async function uploadFileAndUpdateDb(propertyId: string, file: File) {
                 },
             })
         );
-        if (errUpload || !uploadResponse) {
+        if (errUpload || !resUpload) {
             reject({
                 message: `couldn't upload to bucket "${bucket.name}": ${pathInBucket}`,
                 errUpload,
@@ -53,10 +89,10 @@ async function uploadFileAndUpdateDb(propertyId: string, file: File) {
             return;
         }
 
-        // Step 2: Update DB
-        const uploadedFile = uploadResponse[0];
+        // Step 3: Update DB
+        const uploadedFile = resUpload[0];
         const upload: Upload = {
-            name: uploadedFile.name,
+            name: filename,
             url: `https://storage.googleapis.com/${bucket.name}/${uploadedFile.name}`,
         };
 
