@@ -8,11 +8,12 @@ export let propertiesCollection: Collection;
 export function initDatabase() {
     if (!dbConnection) throw Error("DB_CONNECTION not found in process.env !");
 
-    MongoClient.connect(dbConnection, { useUnifiedTopology: true })
+    return MongoClient.connect(dbConnection, { useUnifiedTopology: true })
         .then((client) => {
             console.log("Connected succesful to MongoDB Server");
             db = client.db("immoscoutdb");
             propertiesCollection = db.collection("properties");
+            return;
         })
         .catch((err) => console.error(err));
 }
