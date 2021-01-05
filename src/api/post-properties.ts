@@ -19,9 +19,15 @@ app.post("/properties", isAuthorized, (req, res) => {
         return;
     }
 
+    // add data to property
+    const property: Property = {
+        ...body,
+        created_at: new Date(),
+    };
+
     propertiesCollection
         // create Property in DB
-        .insertOne(body)
+        .insertOne(property)
         .then(() => {
             // if it has images: upload them into bucket
             if (body.images && body.images.length) {
