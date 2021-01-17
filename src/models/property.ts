@@ -1,4 +1,5 @@
 import { Upload } from "./upload";
+import { Image } from "./image";
 
 export interface Property {
     title: string;
@@ -15,7 +16,7 @@ export interface Property {
     sqm_nutzflaeche: string;
     sqm_wohnflaeche: string;
     /** urls */
-    images: string[];
+    images: Image[];
     construction_year: string;
     object_condition: string;
     heating_type: string;
