@@ -37,4 +37,6 @@ export interface Property {
 
     // Extra (not from scraping)
     uploads: Upload[];
+    created_at: Date;
+    modifiedAt: Date;
 }
