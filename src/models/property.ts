@@ -2,6 +2,7 @@ import { Upload } from "./upload";
 import { Image } from "./image";
 
 export interface Property {
+    _id: string;
     title: string;
     scout_id: string;
     street: string;
@@ -17,6 +18,8 @@ export interface Property {
     sqm_wohnflaeche: string;
     /** urls */
     images: Image[];
+    floor: number;
+    floorTotal: number;
     construction_year: string;
     object_condition: string;
     heating_type: string;
