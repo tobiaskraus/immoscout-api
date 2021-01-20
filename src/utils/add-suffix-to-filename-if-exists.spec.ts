@@ -1,6 +1,6 @@
 import { addSuffixToFileNameIfExists } from "./add-suffix-to-filename-if-exists";
 
-fdescribe("addSuffixToFileNameIfExists", () => {
+describe("addSuffixToFileNameIfExists", () => {
     it("an available filename should return it's name", () => {
         expect(addSuffixToFileNameIfExists("abc.txt", ["a.txt", "b.txt"], 10)).toEqual("abc.txt");
     });

@@ -3,6 +3,7 @@ import { isAuthorized } from "../utils/auth";
 import { Property } from "../models/property";
 import { propertiesCollection } from "../database";
 import { downloadFileAndUpload } from "../utils/download-file-and-upload";
+import { bucket } from "../storage";
 
 app.post("/properties", isAuthorized, (req, res) => {
     const body: Property = req.body;
@@ -23,6 +24,10 @@ app.post("/properties", isAuthorized, (req, res) => {
     const property: Property = {
         ...body,
         created_at: new Date(),
+        images: body.images.map((img, i) => ({
+            ...img,
+            urlBucket: `https://storage.googleapis.com/${bucket.name}/properties/${body.scout_id}/${i}.webp`,
+        })),
     };
 
     propertiesCollection
@@ -34,7 +39,7 @@ app.post("/properties", isAuthorized, (req, res) => {
                 const promises: Promise<void>[] = [];
                 body.images.forEach((imgUrl, i) => {
                     const pathInBucket = `properties/${body.scout_id}/${i}.webp`;
-                    promises.push(downloadFileAndUpload(imgUrl, pathInBucket));
+                    promises.push(downloadFileAndUpload(imgUrl.url, pathInBucket));
                 });
                 return Promise.all<void>(promises);
             }
